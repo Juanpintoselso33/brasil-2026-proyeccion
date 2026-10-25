@@ -146,7 +146,7 @@ footer{padding:26px 0 40px;color:var(--mut);font-size:12.5px}
           <div class="side r"><div class="cname lu">Lula <small>PT</small></div><div class="big lu"><span id="pl">–</span><sup>%</sup></div></div>
         </div>
         <div class="pbar" aria-hidden="true"><div class="f" id="barf"></div><div class="ci" id="barci"></div><div class="mid"></div></div>
-        <div class="axis"><span>Intervalo de confianza 90% de Flávio: <b class="num" id="ci">–</b> (recuadro en la barra)</span><span>50%</span></div>
+        <div class="axis"><span>Intervalo 90%: Lula <b class="num" id="cil">–</b> · Flávio <b class="num" id="ci">–</b></span><span>50%</span></div>
         <div class="kpis">
           <div class="kpi"><div class="v num" id="pwin">–</div><div class="l" id="pwinl">Prob. de victoria</div></div>
           <div class="kpi"><div class="v num" id="pvF">–</div><div class="l">Votos proyectados Flávio</div></div>
@@ -229,9 +229,9 @@ const seq = t => rgb(mix([236,240,246],[18,30,56],Math.max(0,Math.min(1,t))));
 
 let metric = 'partial', D = null, H = [], xMode = 't';
 const METRICS = {
-  partial: {label:'Margen parcial: Flávio − Lula, en puntos de votos válidos.', range:30,
+  partial: {label:'Margen parcial: Flávio − Lula, en puntos de votos válidos.', range:50,
     val: r => (r.counted > 0 && r.flavio_pct != null) ? 2*r.flavio_pct-100 : null},
-  proj: {label:'Margen proyectado: Flávio − Lula, en puntos.', range:30,
+  proj: {label:'Margen proyectado: Flávio − Lula, en puntos.', range:50,
     val: r => r.proj_flavio_pct == null ? null : 2*r.proj_flavio_pct-100},
   swing: {label:'Cambio del margen proyectado respecto de la 1ª vuelta. Azul: más Flávio; rojo: más Lula.', range:15,
     val: r => (r.proj_flavio_pct == null || r.r1_flavio_pct == null) ? null : (2*r.proj_flavio_pct-100) - 100*(r.r1_flavio_pct - r.r1_lula_pct)/((r.r1_flavio_pct + r.r1_lula_pct) || 1)},
@@ -301,7 +301,7 @@ function restyle() {
   } else {
     bar.style.background = `linear-gradient(90deg,${diverge(-R,R)},${diverge(0,R)},${diverge(R,R)})`;
     $('lmin').textContent = 'Lula +'+R+' pp'; $('lmax').textContent = 'Flávio +'+R+' pp';
-    $('lgrey').style.display = '';
+    $('lgrey').style.display = (metric === 'partial') ? '' : 'none';
   }
   $('ldesc').textContent = m.label;
 }
@@ -316,23 +316,30 @@ Chart.defaults.font.family = '"IBM Plex Sans",sans-serif';
 const chart = new Chart($('chart'), {
   type:'line',
   data:{labels:[], datasets:[
-    {label:'Intervalo 90%', data:[], borderWidth:0, pointRadius:0, backgroundColor:'rgba(31,91,184,.16)', fill:'+1', order:5},
+    {label:'Intervalo 90% Flávio', data:[], borderWidth:0, pointRadius:0, backgroundColor:'rgba(31,91,184,.14)', fill:'+1', order:5},
     {label:'IC90 inf', data:[], borderWidth:0, pointRadius:0, fill:false, order:5},
+    {label:'Intervalo 90% Lula', data:[], borderWidth:0, pointRadius:0, backgroundColor:'rgba(196,40,40,.13)', fill:'+1', order:5},
+    {label:'IC90 inf', data:[], borderWidth:0, pointRadius:0, fill:false, order:5},
+    {label:'Proyección Lula', data:[], borderColor:CPT, backgroundColor:CPT, borderWidth:3, pointRadius:2, pointHoverRadius:5, tension:.2, order:1},
     {label:'Proyección Flávio', data:[], borderColor:CPL, backgroundColor:CPL, borderWidth:3, pointRadius:2, pointHoverRadius:5, tension:.2, order:1},
-    {label:'Parcial Flávio', data:[], borderColor:'#7a8294', backgroundColor:'#7a8294', borderDash:[6,4], borderWidth:2, pointRadius:2, tension:.2, order:2},
+    {label:'Parcial Lula', data:[], borderColor:CPT, backgroundColor:CPT, borderDash:[6,4], borderWidth:1.5, pointRadius:1.5, tension:.2, order:2},
+    {label:'Parcial Flávio', data:[], borderColor:CPL, backgroundColor:CPL, borderDash:[6,4], borderWidth:1.5, pointRadius:1.5, tension:.2, order:2},
     {label:'Empate (50%)', data:[], borderColor:'#12161d', borderWidth:1, pointRadius:0, borderDash:[2,3], order:6},
   ]},
   options:{responsive:true, maintainAspectRatio:false, animation:false, interaction:{mode:'index', intersect:false},
     scales:{x:{ticks:{color:'#7a8294', maxTicksLimit:8, maxRotation:0}, grid:{display:false}},
-            y:{ticks:{color:'#7a8294', callback:v=>v+'%'}, grid:{color:'#eef0f3'}, title:{display:true, text:'% de Flávio (votos válidos)', color:'#7a8294'}}},
+            y:{ticks:{color:'#7a8294', callback:v=>v+'%'}, grid:{color:'#eef0f3'}, title:{display:true, text:'% de votos válidos', color:'#7a8294'}}},
     plugins:{legend:{position:'bottom', labels:{color:'#4a5261', usePointStyle:true, boxWidth:8, filter:i=>i.text!=='IC90 inf'}}, tooltip:{filter:i=>i.dataset.label!=='IC90 inf'&&i.dataset.label!=='Empate (50%)', callbacks:{label:c=>c.dataset.label+': '+fmt(c.parsed.y,2)+'%'}}}}
 });
 function drawChart() {
   const c = chart.data;
   c.labels = H.map(h => xMode==='t' ? h.t.slice(0,5) : fmt(h.counted*100,1)+'%');
+  const inv = v => v == null ? null : 100 - v;
   c.datasets[0].data = H.map(h=>h.hi); c.datasets[1].data = H.map(h=>h.lo);
-  c.datasets[2].data = H.map(h=>h.proj_flavio_pct); c.datasets[3].data = H.map(h=>h.partial_flavio_pct);
-  c.datasets[4].data = H.map(()=>50);
+  c.datasets[2].data = H.map(h=>inv(h.lo)); c.datasets[3].data = H.map(h=>inv(h.hi));
+  c.datasets[4].data = H.map(h=>inv(h.proj_flavio_pct)); c.datasets[5].data = H.map(h=>h.proj_flavio_pct);
+  c.datasets[6].data = H.map(h=>inv(h.partial_flavio_pct)); c.datasets[7].data = H.map(h=>h.partial_flavio_pct);
+  c.datasets[8].data = H.map(()=>50);
   chart.update();
 }
 $('xt').onclick = () => { xMode='t'; $('xt').classList.add('on'); $('xc').classList.remove('on'); drawChart(); };
@@ -340,14 +347,14 @@ $('xc').onclick = () => { xMode='c'; $('xc').classList.add('on'); $('xt').classL
 
 // ---- tables ----
 let sortKey = 'electorate', sortDir = -1;
-const COLS = [['uf','UF'],['electorate','Electorado'],['counted','Escrut.'],['flavio_pct','Parcial F'],['proj_flavio_pct','Proy. F'],['r1_flavio_pct','1ª v. F'],['r1_lula_pct','1ª v. L'],['mp','Margen proy. (pp)']];
+const COLS = [['uf','UF'],['electorate','Electorado'],['counted','Escrut.'],['flavio_pct','Parcial F'],['pl','Parcial L'],['proj_flavio_pct','Proy. F'],['ql','Proy. L'],['r1_flavio_pct','1ª v. F'],['r1_lula_pct','1ª v. L'],['mp','Margen proy. (pp)']];
 function mbar(v){ const w = Math.min(50, Math.abs(v)/60*50); const col = v>=0?CPL:CPT;
   return `<span class="mbar"><span class="tk"><i style="${v>=0?'left:50%':'right:50%'};width:${w}%;background:${col}"></i></span><b style="color:${col};font-weight:500;min-width:42px;text-align:right">${sgn(v)}</b></span>`; }
 function drawTable() {
-  const rows = D.states.map(s => ({...s, mp: 2*s.proj_flavio_pct-100}));
+  const rows = D.states.map(s => ({...s, mp: 2*s.proj_flavio_pct-100, pl: s.counted>0 ? 100-s.flavio_pct : null, ql: 100-s.proj_flavio_pct}));
   rows.sort((a,b) => (a[sortKey]>b[sortKey]?1:a[sortKey]<b[sortKey]?-1:0)*sortDir);
   $('stt').innerHTML = '<thead><tr>' + COLS.map(([k,l]) => `<th data-k="${k}" tabindex="0" class="${k===sortKey?'cur':''}" aria-sort="${k===sortKey?(sortDir>0?'ascending':'descending'):'none'}">${l}${k===sortKey?(sortDir>0?' ▲':' ▼'):''}</th>`).join('') + '</tr></thead><tbody>' +
-    rows.map(s => `<tr><td><b>${s.uf}</b></td><td>${fmtN(s.electorate)}</td><td>${pc(s.counted*100,0)}</td><td>${s.counted>0?pc(s.flavio_pct):'–'}</td><td>${pc(s.proj_flavio_pct)}</td><td>${pc(s.r1_flavio_pct)}</td><td>${pc(s.r1_lula_pct)}</td><td>${mbar(s.mp)}</td></tr>`).join('') + '</tbody>';
+    rows.map(s => `<tr><td><b>${s.uf}</b></td><td>${fmtN(s.electorate)}</td><td>${pc(s.counted*100,0)}</td><td>${s.counted>0?pc(s.flavio_pct):'–'}</td><td>${s.pl!=null?pc(s.pl):'–'}</td><td>${pc(s.proj_flavio_pct)}</td><td>${pc(s.ql)}</td><td>${pc(s.r1_flavio_pct)}</td><td>${pc(s.r1_lula_pct)}</td><td>${mbar(s.mp)}</td></tr>`).join('') + '</tbody>';
   document.querySelectorAll('#stt th').forEach(th => { const go = () => { const k = th.dataset.k; if (k===sortKey) sortDir*=-1; else {sortKey=k; sortDir=k==='uf'?1:-1;} drawTable(); };
     th.onclick = go; th.onkeydown = e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); go(); } }; });
 }
@@ -369,7 +376,7 @@ function summary() {
   $('barf').style.width = pf + '%';
   const lo = n.ci90[0], hi = n.ci90[1];
   $('barci').style.left = lo + '%'; $('barci').style.width = Math.max(0.4, hi-lo) + '%';
-  $('ci').textContent = `${fmt(lo,2)}% – ${fmt(hi,2)}%`;
+  $('ci').textContent = `${fmt(lo,2)}% – ${fmt(hi,2)}%`; $('cil').textContent = `${fmt(100-hi,2)}% – ${fmt(100-lo,2)}%`;
   $('pvF').textContent = fmtN(n.proj_flavio_votes); $('pvL').textContent = fmtN(n.proj_lula_votes);
   const favF = pf >= 50, pfav = favF ? n.p_flavio_wins : 1-n.p_flavio_wins, favN = favF ? 'Flávio' : 'Lula';
   $('pwin').textContent = pwFmt(pfav); $('pwin').className = 'v num ' + (favF?'fl':'lu');
