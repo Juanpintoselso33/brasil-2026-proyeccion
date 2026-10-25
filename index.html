@@ -4,123 +4,212 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Balotaje Brasil 2026 en vivo</title>
+<meta name="description" content="Proyección en vivo de la segunda vuelta presidencial de Brasil: Flávio Bolsonaro vs Lula.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="lib/leaflet.css">
 <style>
-:root{--bg:#0f1218;--card:#181d27;--line:#2a3140;--txt:#e8ebf2;--mut:#8b94a8;--pl:#2f6df0;--pt:#e0342f;--grey:#4a5160}
+:root{
+  --bg:#f4f5f7;--card:#fff;--ink:#12161d;--ink2:#4a5261;--mut:#7a8294;--line:#e2e5ea;--line2:#eef0f3;
+  --pl:#1f5bb8;--pl-soft:#e6eefa;--pt:#c0312a;--pt-soft:#fae9e7;--grey:#c5c9d1;--mid:#f1efec;
+  --live:#1b9a5a;--warn:#c98a0b;--bad:#c0312a;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;--sans:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,sans-serif;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
-h1{font-size:18px;margin:0}
-#status{color:var(--mut);font-size:12px}
-#status.err{color:#f59e0b}
-main{padding:14px 18px;display:grid;gap:14px;max-width:1700px;margin:auto}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
-.card h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:0 0 8px;font-weight:600}
-.hero{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:14px}
-@media(max-width:1000px){.hero{grid-template-columns:1fr}}
-.big{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.cand{font-size:12px;color:var(--mut)}
-.pct{font-size:54px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
-.pct.sm{font-size:32px}
-.fl{color:var(--pl)}.lu{color:var(--pt)}
-.bar{height:14px;border-radius:7px;background:var(--pt);overflow:hidden;position:relative;margin:10px 0 4px}
-.bar>i{position:absolute;left:0;top:0;bottom:0;background:var(--pl)}
-.bar>b{position:absolute;left:50%;top:-2px;bottom:-2px;width:2px;background:#fff}
-.tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:5px;background:#26304a;color:#9db6ff;margin-bottom:6px;font-weight:600}
-.tag.p{background:#3a2d1c;color:#f5b862}
-.kv{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed var(--line)}
-.kv:last-child{border:0}.kv span:first-child{color:var(--mut)}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--sans)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+@media(max-width:600px){.wrap{padding:0 14px}}
 .num{font-variant-numeric:tabular-nums}
-.maps{display:grid;grid-template-columns:2.2fr 1fr;gap:14px}
-@media(max-width:1000px){.maps{grid-template-columns:1fr}}
-.map{height:620px;border-radius:8px;background:#0b0e14}
-.stmap{height:540px}
-.leaflet-container{background:#0b0e14;font:inherit}
-.ctrl{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.ctrl button{background:#232a38;border:1px solid var(--line);color:var(--txt);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:12px}
-.ctrl button.on{background:#3558b8;border-color:#3558b8}
-.legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mut);margin-top:6px}
-.legend i{flex:1;height:10px;border-radius:5px;max-width:320px}
-.two{display:grid;grid-template-columns:1.6fr 1fr;gap:14px}
-@media(max-width:1000px){.two{grid-template-columns:1fr}}
-table{border-collapse:collapse;width:100%}
-th,td{padding:5px 8px;text-align:right;font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line)}
-th{cursor:pointer;color:var(--mut);font-weight:600;font-size:12px;user-select:none;position:sticky;top:0;background:var(--card)}
-th:first-child,td:first-child{text-align:left}
-.tw{max-height:430px;overflow:auto}
+.fl{color:var(--pl)}.lu{color:var(--pt)}
+/* top bar */
+.top{background:var(--ink);color:#fff}
+.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
+.brand{font:600 15px/1.2 var(--sans);letter-spacing:.01em}
+.brand span{color:#9aa3b5;font-weight:400}
+.live{display:flex;align-items:center;gap:8px;font-size:13px;color:#d6dbe6}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--live);flex:none;box-shadow:0 0 0 0 rgba(27,154,90,.6);animation:pulse 2s infinite}
+.live.warn .dot{background:var(--warn);animation:none}.live.bad .dot{background:#ef5b52;animation:none}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(27,154,90,0)}100%{box-shadow:0 0 0 0 rgba(27,154,90,0)}}
+@media(prefers-reduced-motion:reduce){.dot{animation:none}}
+/* hero */
+.hero{padding:26px 0 8px}
+.hero h1{font:700 clamp(26px,4.2vw,44px)/1.08 var(--serif);letter-spacing:-.01em;margin:0 0 8px;max-width:22em}
+.hero .sub{color:var(--ink2);font-size:16px;margin:0 0 22px;max-width:60em}
+.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:16px}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 20px}
+@media(max-width:600px){.card{padding:14px}}
+.card h2{font:600 15px/1.2 var(--sans);margin:0 0 4px;color:var(--ink)}
+.card .hint{color:var(--mut);font-size:13px;margin:0 0 12px}
+.badge{display:inline-block;font:600 12px/1 var(--sans);padding:4px 8px;border-radius:3px;margin-bottom:10px}
+.badge.proj{background:var(--ink);color:#fff}
+.badge.part{background:transparent;color:var(--ink2);border:1px solid var(--grey)}
+.duo{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.duo .side{min-width:0}.duo .side.r{text-align:right}
+.cname{font-size:14px;font-weight:500}
+.cname small{color:var(--mut);font-weight:400}
+.big{font:700 clamp(54px,9vw,92px)/.95 var(--serif);letter-spacing:-.03em;font-variant-numeric:lining-nums tabular-nums}
+.big sup{font-size:.4em;font-weight:600;vertical-align:top;position:relative;top:.15em;margin-left:2px;letter-spacing:0}
+.pbar{position:relative;height:22px;border-radius:2px;background:var(--pt);margin:16px 0 0;overflow:visible}
+.pbar .f{position:absolute;left:0;top:0;bottom:0;background:var(--pl);border-radius:2px 0 0 2px}
+.pbar .mid{position:absolute;left:50%;top:-7px;bottom:-7px;width:2px;background:var(--ink);margin-left:-1px}
+.pbar .ci{position:absolute;top:-5px;bottom:-5px;border:2px solid #fff;outline:1.5px solid var(--ink);background:rgba(255,255,255,.35);border-radius:2px;min-width:4px}
+.axis{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:10px}
+.axis b{color:var(--ink);font-weight:500}
+.thin{height:10px;margin-top:12px}
+.thin .mid{top:-4px;bottom:-4px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:20px;border-top:1px solid var(--line)}
+.kpi{padding:12px 12px 0 0}
+.kpi+.kpi{padding-left:14px;border-left:1px solid var(--line2)}
+.kpi .v{font:700 24px/1.1 var(--serif);font-variant-numeric:lining-nums tabular-nums}
+.kpi .l{font-size:12.5px;color:var(--mut);margin-top:3px}
+@media(max-width:600px){.kpi .v{font-size:20px}.kpi{padding-right:6px}.kpi+.kpi{padding-left:10px}}
+.prog{margin-top:6px}
+.prog .track{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.prog .track i{display:block;height:100%;background:var(--ink);border-radius:4px;transition:width .6s}
+.prog .row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;color:var(--ink2)}
+.prog .row b{color:var(--ink);font-size:20px;font-family:var(--serif)}
+.side-note{font-size:13px;color:var(--ink2);margin-top:14px;padding:10px 12px;background:var(--bg);border-left:3px solid var(--grey);border-radius:2px}
+.v1 {font-size:13px;color:var(--mut);margin-top:14px}
+/* sections */
+section.block{margin-top:16px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.head h2{font:700 22px/1.1 var(--serif);margin:0}
+.seg{display:inline-flex;border:1px solid var(--grey);border-radius:5px;overflow:hidden;background:#fff;max-width:100%}
+.seg button{font:500 13px/1 var(--sans);color:var(--ink2);background:#fff;border:0;border-right:1px solid var(--line);padding:9px 12px;cursor:pointer;white-space:nowrap}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--ink);color:#fff}
+.seg button:focus-visible,th:focus-visible{outline:2px solid var(--pl);outline-offset:-2px}
+@media(max-width:600px){.seg{display:grid;grid-template-columns:1fr 1fr;width:100%}.seg button{border-bottom:1px solid var(--line)}.seg button:nth-child(2n){border-right:0}.seg button:nth-last-child(-n+2){border-bottom:0}}
+.maps{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px}
+@media(max-width:900px){.maps{grid-template-columns:minmax(0,1fr)}}
+.mapcap{font:600 13px/1 var(--sans);color:var(--ink2);margin:0 0 8px}
+.map{height:600px;border-radius:4px;background:#e9edf3;border:1px solid var(--line)}
+.stmap{height:600px}
+@media(max-width:900px){.map,.stmap{height:420px}}
+@media(max-width:600px){.map,.stmap{height:340px}}
+.leaflet-container{background:#e9edf3;font:inherit}
+.leaflet-bar a{color:var(--ink)}
+.legend{margin-top:14px;max-width:560px}
+.legend .bar{height:10px;border-radius:2px}
+.legend .ends{display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);margin-top:4px}
+.legend .sw{display:inline-block;width:11px;height:11px;background:var(--grey);vertical-align:-1px;margin-right:5px;border-radius:2px}
+.legend .desc{font-size:12.5px;color:var(--mut);margin-top:6px}
+.note{color:var(--mut);font-size:12.5px;margin-top:8px}
+.leaflet-tooltip.tt{background:#fff;border:1px solid var(--grey);border-radius:4px;box-shadow:0 4px 14px rgba(18,22,29,.18);color:var(--ink);padding:9px 11px;font-size:12.5px;line-height:1.35}
+.leaflet-tooltip.tt:before{display:none}
+.tt b{font-size:14px}
+.tt table{border-collapse:collapse;margin-top:5px;width:100%}
+.tt th,.tt td{padding:2px 0 2px 12px;text-align:right;font-weight:400;font-variant-numeric:tabular-nums;border:0;position:static;background:none;cursor:default}
+.tt th{color:var(--mut);font-size:11.5px}.tt th:first-child,.tt td:first-child{text-align:left;padding-left:0}
 .chartbox{height:340px;position:relative}
-.tr{margin-bottom:12px}
-.tr .lbl{font-size:12px;margin-bottom:3px}
-.stack{display:flex;height:16px;border-radius:4px;overflow:hidden;background:var(--grey)}
+@media(max-width:600px){.chartbox{height:280px}}
+.two{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px}
+@media(max-width:900px){.two{grid-template-columns:minmax(0,1fr)}}
+.tw{max-height:520px;overflow:auto;margin:0 -4px;-webkit-overflow-scrolling:touch}
+table.st{border-collapse:separate;border-spacing:0;width:100%;font-size:13.5px}
+.st th,.st td{padding:7px 8px;text-align:right;font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line2);white-space:nowrap}
+.st th{cursor:pointer;color:var(--mut);font-weight:500;font-size:12.5px;user-select:none;position:sticky;top:0;background:#fff;z-index:2;border-bottom:1px solid var(--grey)}
+.st th.cur{color:var(--ink)}
+.st th:first-child,.st td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1}
+.st th:first-child{z-index:3}
+.st tbody tr:hover td{background:var(--bg)}
+.mbar{display:inline-flex;align-items:center;gap:6px;width:120px;justify-content:flex-end}
+.mbar .tk{position:relative;width:64px;height:8px;background:var(--line2)}
+.mbar .tk:after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--mut)}
+.mbar .tk i{position:absolute;top:0;bottom:0}
+.tr{margin-bottom:16px}
+.tr .lbl{font-size:13.5px;font-weight:500;margin-bottom:5px}
+.stack{display:flex;height:14px;border-radius:2px;overflow:hidden;background:var(--line)}
 .stack i{display:block}
-.note{color:var(--mut);font-size:11px;margin-top:6px}
-.tt b{font-size:13px}
-.tt table td,.tt table th{padding:1px 6px;border:0;position:static;background:none}
+.tr .n{font-size:12.5px;color:var(--ink2);margin-top:4px}
+footer{padding:26px 0 40px;color:var(--mut);font-size:12.5px}
 </style>
 </head>
 <body>
-<header>
-  <h1>Balotaje Brasil 2026 · Flávio Bolsonaro (PL) vs Lula (PT) · en vivo</h1>
-  <div id="status">cargando…</div>
-</header>
-<main>
-  <section class="hero">
-    <div class="card">
-      <span class="tag">PROYECCIÓN (resultado final estimado)</span>
-      <div class="big">
-        <div><div class="cand fl">Flávio Bolsonaro</div><div class="pct fl" id="pf">–</div></div>
-        <div><div class="cand lu">Lula</div><div class="pct lu" id="pl">–</div></div>
-      </div>
-      <div class="bar"><i id="barf"></i><b></b></div>
-      <div class="note">% de los votos válidos (dos candidatos). Votos proyectados: <span id="pvotes" class="num">–</span></div>
-    </div>
-    <div class="card">
-      <span class="tag p">CONTEO PARCIAL (actas ya escrutadas)</span>
-      <div class="big">
-        <div><div class="cand fl">Flávio</div><div class="pct sm fl" id="qf">–</div></div>
-        <div><div class="cand lu">Lula</div><div class="pct sm lu" id="ql">–</div></div>
-      </div>
-      <div class="note" style="margin-top:8px">Votos contados: <span id="qvotes" class="num">–</span></div>
-      <div class="note">El parcial no es la proyección: depende de qué regiones ya reportaron.</div>
-    </div>
-    <div class="card">
-      <h2>Incertidumbre</h2>
-      <div class="kv"><span>Escrutado (electorado)</span><b class="num" id="counted">–</b></div>
-      <div class="kv"><span>Intervalo 90% Flávio</span><b class="num" id="ci">–</b></div>
-      <div class="kv"><span>Prob. victoria Flávio</span><b class="num fl" id="pw">–</b></div>
-      <div class="kv"><span>Prob. victoria Lula</span><b class="num lu" id="pwl">–</b></div>
-      <div class="kv"><span>1ª vuelta</span><b class="num" id="r1">–</b></div>
-      <div class="kv"><span>Última actualización</span><b class="num" id="upd">–</b></div>
-    </div>
-  </section>
+<div class="top"><div class="wrap">
+  <div class="brand">Balotaje Brasil 2026 <span>· Flávio Bolsonaro (PL) vs Lula (PT)</span></div>
+  <div class="live" id="live" role="status"><span class="dot"></span><span id="status">cargando…</span></div>
+</div></div>
 
-  <section class="card">
-    <div class="ctrl" id="metrics">
-      <button data-m="partial" class="on">Margen parcial</button>
-      <button data-m="proj">Margen proyectado</button>
-      <button data-m="swing">Cambio vs 1ª vuelta</button>
-      <button data-m="counted">% escrutado</button>
+<main class="wrap">
+  <header class="hero">
+    <h1 id="hl">Cargando proyección…</h1>
+    <p class="sub" id="sub"></p>
+    <div class="grid">
+      <div class="card">
+        <span class="badge proj">Proyección del resultado final</span>
+        <div class="duo">
+          <div class="side"><div class="cname fl">Flávio Bolsonaro <small>PL</small></div><div class="big fl"><span id="pf">–</span><sup>%</sup></div></div>
+          <div class="side r"><div class="cname lu">Lula <small>PT</small></div><div class="big lu"><span id="pl">–</span><sup>%</sup></div></div>
+        </div>
+        <div class="pbar" aria-hidden="true"><div class="f" id="barf"></div><div class="ci" id="barci"></div><div class="mid"></div></div>
+        <div class="axis"><span>Intervalo de confianza 90% de Flávio: <b class="num" id="ci">–</b> (recuadro en la barra)</span><span>50%</span></div>
+        <div class="kpis">
+          <div class="kpi"><div class="v num" id="pwin">–</div><div class="l" id="pwinl">Prob. de victoria</div></div>
+          <div class="kpi"><div class="v num" id="pvF">–</div><div class="l">Votos proyectados Flávio</div></div>
+          <div class="kpi"><div class="v num" id="pvL">–</div><div class="l">Votos proyectados Lula</div></div>
+        </div>
+        <p class="note" style="margin-bottom:0">Porcentaje de votos válidos entre los dos candidatos, estimado para el total del país con el voto ya escrutado y el de la 1ª vuelta en cada municipio.</p>
+      </div>
+      <div class="card">
+        <span class="badge part">Conteo oficial parcial (TSE)</span>
+        <div class="prog">
+          <div class="row"><span>Escrutado</span><b class="num" id="counted">–</b></div>
+          <div class="track"><i id="cbar" style="width:0"></i></div>
+        </div>
+        <div class="duo" style="margin-top:20px">
+          <div class="side"><div class="cname fl">Flávio</div><div class="big fl" style="font-size:clamp(40px,6vw,56px)"><span id="qf">–</span><sup>%</sup></div></div>
+          <div class="side r"><div class="cname lu">Lula</div><div class="big lu" style="font-size:clamp(40px,6vw,56px)"><span id="ql">–</span><sup>%</sup></div></div>
+        </div>
+        <div class="pbar thin" aria-hidden="true"><div class="f" id="qbar"></div><div class="mid"></div></div>
+        <div class="axis"><span>Votos contados: <b class="num" id="qvotes">–</b></span></div>
+        <div class="side-note" id="partnote">El conteo parcial no es el resultado final: depende de qué regiones ya reportaron.</div>
+        <div class="v1">1ª vuelta: Flávio <b class="num" id="r1f">–</b> · Lula <b class="num" id="r1l">–</b></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="block card">
+    <div class="head">
+      <h2>Mapa del resultado</h2>
+      <div class="seg" id="metrics" role="group" aria-label="Métrica del mapa">
+        <button data-m="partial" class="on">Margen parcial</button>
+        <button data-m="proj">Margen proyectado</button>
+        <button data-m="swing">Cambio vs 1ª vuelta</button>
+        <button data-m="counted">% escrutado</button>
+      </div>
     </div>
     <div class="maps">
-      <div><h2>Municipios (5.570)</h2><div id="mmap" class="map"></div></div>
-      <div><h2>Estados</h2><div id="smap" class="map stmap"></div></div>
+      <div><p class="mapcap">Municipios</p><div id="mmap" class="map"></div></div>
+      <div><p class="mapcap">Estados</p><div id="smap" class="map stmap"></div></div>
     </div>
-    <div class="legend"><span id="lmin"></span><i id="lbar"></i><span id="lmax"></span><span id="ldesc" style="margin-left:10px"></span></div>
+    <div class="legend">
+      <div class="bar" id="lbar"></div>
+      <div class="ends"><span id="lmin"></span><span id="lmax"></span></div>
+      <div class="desc"><span id="ldesc"></span> <span id="lgrey"><span class="sw"></span>Gris: sin votos escrutados</span></div>
+    </div>
     <div class="note" id="mapnote"></div>
   </section>
 
-  <section class="card">
-    <h2>Evolución de la proyección</h2>
-    <div class="ctrl"><button id="xt" class="on">Eje: hora</button><button id="xc">Eje: % escrutado</button></div>
+  <section class="block card">
+    <div class="head">
+      <h2>Evolución de la proyección</h2>
+      <div class="seg"><button id="xt" class="on">Por hora</button><button id="xc">Por % escrutado</button></div>
+    </div>
     <div class="chartbox"><canvas id="chart"></canvas></div>
   </section>
 
-  <section class="two">
-    <div class="card"><h2>Estados</h2><div class="tw"><table id="stt"></table></div></div>
-    <div class="card"><h2>Transferencia de votos (1ª → 2ª vuelta)</h2><div id="trans"></div>
+  <section class="block two">
+    <div class="card"><div class="head" style="margin-bottom:6px"><h2>Estados</h2></div><p class="hint">Tocá una columna para ordenar.</p><div class="tw"><table class="st" id="stt"></table></div></div>
+    <div class="card"><div class="head" style="margin-bottom:6px"><h2>Transferencia de votos</h2></div><p class="hint">De la 1ª a la 2ª vuelta, según el voto de cada grupo.</p><div id="trans"></div>
       <div class="note">Votos de segunda vuelta estimados por cada voto de primera vuelta de cada grupo. Gris: no votan / blanco / nulo.</div></div>
   </section>
+  <footer>Proyección estadística basada en el conteo del TSE. Se actualiza sola cada 30 segundos, sin recargar la página.</footer>
 </main>
+
 <script src="lib/leaflet.js"></script>
 <script src="lib/chart.umd.js"></script>
 <script>
@@ -131,21 +220,22 @@ const $ = id => document.getElementById(id);
 const fmt = (x, d=1) => x == null ? '–' : x.toLocaleString('es-UY', {minimumFractionDigits:d, maximumFractionDigits:d});
 const fmtN = x => x == null ? '–' : Math.round(x).toLocaleString('es-UY');
 const pc = (x, d=1) => x == null ? '–' : fmt(x, d) + '%';
-const PL = [47,109,240], PT = [224,52,47], MID = [236,238,243], GREY = '#3b4252';
+const CPL='#1f5bb8', CPT='#c0312a';
+const PL = [28,84,176], PT = [182,40,34], MID = [243,241,238], GREY = '#c5c9d1';
 const mix = (a,b,t) => a.map((v,i)=>Math.round(v+(b[i]-v)*t));
 const rgb = c => `rgb(${c[0]},${c[1]},${c[2]})`;
 const diverge = (v, range) => { const t = Math.max(-1, Math.min(1, v/range)); return rgb(t>=0 ? mix(MID,PL,t) : mix(MID,PT,-t)); };
-const seq = t => rgb(mix([40,48,66],[120,200,170],Math.max(0,Math.min(1,t))));
+const seq = t => rgb(mix([236,240,246],[18,30,56],Math.max(0,Math.min(1,t))));
 
 let metric = 'partial', D = null, H = [], xMode = 't';
 const METRICS = {
-  partial: {label:'Margen parcial (Flávio − Lula, pp de votos válidos)', range:30,
+  partial: {label:'Margen parcial: Flávio − Lula, en puntos de votos válidos.', range:30,
     val: r => (r.counted > 0 && r.flavio_pct != null) ? 2*r.flavio_pct-100 : null},
-  proj: {label:'Margen proyectado (Flávio − Lula, pp)', range:30,
+  proj: {label:'Margen proyectado: Flávio − Lula, en puntos.', range:30,
     val: r => r.proj_flavio_pct == null ? null : 2*r.proj_flavio_pct-100},
-  swing: {label:'Cambio del margen vs 1ª vuelta (proyectado − 1ª vuelta; azul = más Flávio)', range:15,
+  swing: {label:'Cambio del margen proyectado respecto de la 1ª vuelta. Azul: más Flávio; rojo: más Lula.', range:15,
     val: r => (r.proj_flavio_pct == null || r.r1_flavio_pct == null) ? null : (2*r.proj_flavio_pct-100) - 100*(r.r1_flavio_pct - r.r1_lula_pct)/((r.r1_flavio_pct + r.r1_lula_pct) || 1)},
-  counted: {label:'% escrutado', range:1, val: r => r.counted},
+  counted: {label:'Porcentaje del electorado ya escrutado.', range:1, val: r => r.counted},
 };
 function colorFor(r) {
   if (!r) return GREY;
@@ -154,16 +244,16 @@ function colorFor(r) {
   if (v == null || (metric !== 'proj' && metric !== 'swing' && !(r.counted > 0))) return GREY;
   return diverge(v, m.range);
 }
-function sgn(v, d=1){ return v == null ? '–' : (v>=0?'+':'') + fmt(v,d); }
-function tip(r, name, extra) {
+function sgn(v, d=1){ return v == null ? '–' : (v>=0?'+':'−') + fmt(Math.abs(v),d); }
+function tip(r, name) {
   if (!r) return `<b>${name}</b><br>sin datos`;
-  const mp = r.counted > 0 && r.flavio_pct != null ? 2*r.flavio_pct-100 : null;
-  return `<div class="tt"><b>${name}${extra||''}</b><br>Escrutado: ${pc(r.counted*100,0)}
+  const has = r.counted > 0 && r.flavio_pct != null;
+  return `<b>${name}</b><br>Escrutado: ${pc(r.counted*100,0)}
   <table><tr><th></th><th>Flávio</th><th>Lula</th></tr>
-  <tr><td>Parcial</td><td>${r.counted>0&&r.flavio_pct!=null?pc(r.flavio_pct):'–'}</td><td>${r.counted>0&&r.flavio_pct!=null?pc(100-r.flavio_pct):'–'}</td></tr>
+  <tr><td>Parcial</td><td>${has?pc(r.flavio_pct):'–'}</td><td>${has?pc(100-r.flavio_pct):'–'}</td></tr>
   <tr><td>Proyectado</td><td>${pc(r.proj_flavio_pct)}</td><td>${r.proj_flavio_pct==null?'–':pc(100-r.proj_flavio_pct)}</td></tr>
   <tr><td>1ª vuelta</td><td>${pc(r.r1_flavio_pct)}</td><td>${pc(r.r1_lula_pct)}</td></tr></table>
-  Margen proy.: ${sgn(r.proj_flavio_pct==null?null:2*r.proj_flavio_pct-100)} pp</div>`;
+  Margen proyectado: ${sgn(r.proj_flavio_pct==null?null:2*r.proj_flavio_pct-100)} pp</div>`;
 }
 
 // ---- maps ----
@@ -173,16 +263,17 @@ const smap = L.map('smap', common).setView([-14.5,-52], 3.5);
 let mLayer, sLayer;
 const byIbge = new Map(), byUF = new Map();
 const UFCODE = {'11':'RO','12':'AC','13':'AM','14':'RR','15':'PA','16':'AP','17':'TO','21':'MA','22':'PI','23':'CE','24':'RN','25':'PB','26':'PE','27':'AL','28':'SE','29':'BA','31':'MG','32':'ES','33':'RJ','35':'SP','41':'PR','42':'SC','43':'RS','50':'MS','51':'MT','52':'GO','53':'DF'};
-let joinStats = {matched:0, total:0, missing:[]};
+const MUNSTYLE = f => ({fillColor: colorFor(byIbge.get(f.properties.id)), fillOpacity:1, color:'#fff', weight:.3, opacity:.55});
+const STSTYLE = f => ({fillColor: colorFor(byUF.get(UFCODE[f.properties.uf])), fillOpacity:1, color:'#fff', weight:1.2, opacity:1});
 
-function mkLayer(map, url, keyFn, lookup, nameFn, weight) {
+function mkLayer(map, url, keyFn, lookup, nameFn, style, hw) {
   return fetch(url).then(r => r.json()).then(gj => {
     const layer = L.geoJSON(gj, {
-      style: f => ({fillColor: colorFor(lookup(keyFn(f))), fillOpacity:.95, color:'#0b0e14', weight, opacity:1}),
+      style,
       onEachFeature: (f, l) => {
-        l.on('mouseover', () => { l.setStyle({weight:weight+1.2, color:'#fff'}); l.bringToFront(); });
+        l.on('mouseover', () => { l.setStyle({weight:hw, color:'#12161d', opacity:1}); l.bringToFront(); });
         l.on('mouseout', () => layer.resetStyle(l));
-        l.bindTooltip(() => tip(lookup(keyFn(f)), nameFn(f), ''), {sticky:true});
+        l.bindTooltip(() => tip(lookup(keyFn(f)), nameFn(f)), {sticky:true, className:'tt'});
       }
     }).addTo(map);
     map.fitBounds(layer.getBounds());
@@ -190,19 +281,29 @@ function mkLayer(map, url, keyFn, lookup, nameFn, weight) {
   });
 }
 const mapsReady = Promise.all([
-  mkLayer(mmap, 'geo/mun.json', f => f.properties.id, k => byIbge.get(k), f => f.properties.name + ' (' + UFCODE[f.properties.uf] + ')', .25).then(l => mLayer = l),
-  mkLayer(smap, 'geo/uf.json', f => UFCODE[f.properties.uf], k => byUF.get(k), f => UFCODE[f.properties.uf], .8).then(l => sLayer = l),
+  mkLayer(mmap, 'geo/mun.json', f => f.properties.id, k => byIbge.get(k), f => f.properties.name + ' (' + UFCODE[f.properties.uf] + ')', MUNSTYLE, 1.5).then(l => mLayer = l),
+  mkLayer(smap, 'geo/uf.json', f => UFCODE[f.properties.uf], k => byUF.get(k), f => UFCODE[f.properties.uf], STSTYLE, 2.5).then(l => sLayer = l),
 ]);
+// state borders on top of the municipality map (not interactive)
+fetch('geo/uf.json').then(r=>r.json()).then(gj => {
+  mmap.createPane('ufb'); mmap.getPane('ufb').style.zIndex = 450; mmap.getPane('ufb').style.pointerEvents = 'none';
+  L.geoJSON(gj, {pane:'ufb', interactive:false, style:{fill:false, color:'#12161d', weight:.9, opacity:.55}}).addTo(mmap);
+}).catch(()=>{});
+
 function restyle() {
   if (!D) return;
-  // setStyle keeps zoom/center; layer.setStyle re-evaluates the style function
-  if (mLayer) mLayer.setStyle(f => ({fillColor: colorFor(byIbge.get(f.properties.id)), fillOpacity:.95, color:'#0b0e14', weight:.25}));
-  if (sLayer) sLayer.setStyle(f => ({fillColor: colorFor(byUF.get(UFCODE[f.properties.uf])), fillOpacity:.95, color:'#0b0e14', weight:.8}));
-  const m = METRICS[metric], R = m.range;
-  const bar = $('lbar');
-  if (metric === 'counted') { bar.style.background = `linear-gradient(90deg,${seq(0)},${seq(1)})`; $('lmin').textContent='0%'; $('lmax').textContent='100%'; }
-  else { bar.style.background = `linear-gradient(90deg,${diverge(-R,R)},${diverge(0,R)},${diverge(R,R)})`; $('lmin').textContent = '← Lula +'+R+' pp'; $('lmax').textContent = 'Flávio +'+R+' pp →'; }
-  $('ldesc').textContent = m.label + (metric==='counted'?'':' · gris = sin votos escrutados');
+  if (mLayer) mLayer.setStyle(MUNSTYLE);
+  if (sLayer) sLayer.setStyle(STSTYLE);
+  const m = METRICS[metric], R = m.range, bar = $('lbar');
+  if (metric === 'counted') {
+    bar.style.background = `linear-gradient(90deg,${seq(0)},${seq(1)})`; $('lmin').textContent='0%'; $('lmax').textContent='100%';
+    $('lgrey').style.display = 'none';
+  } else {
+    bar.style.background = `linear-gradient(90deg,${diverge(-R,R)},${diverge(0,R)},${diverge(R,R)})`;
+    $('lmin').textContent = 'Lula +'+R+' pp'; $('lmax').textContent = 'Flávio +'+R+' pp';
+    $('lgrey').style.display = '';
+  }
+  $('ldesc').textContent = m.label;
 }
 document.querySelectorAll('#metrics button').forEach(b => b.onclick = () => {
   metric = b.dataset.m;
@@ -211,23 +312,27 @@ document.querySelectorAll('#metrics button').forEach(b => b.onclick = () => {
 });
 
 // ---- chart ----
+Chart.defaults.font.family = '"IBM Plex Sans",sans-serif';
 const chart = new Chart($('chart'), {
   type:'line',
   data:{labels:[], datasets:[
-    {label:'Intervalo 90%', data:[], borderWidth:0, pointRadius:0, backgroundColor:'rgba(47,109,240,.18)', fill:'+1', order:5},
+    {label:'Intervalo 90%', data:[], borderWidth:0, pointRadius:0, backgroundColor:'rgba(31,91,184,.16)', fill:'+1', order:5},
     {label:'IC90 inf', data:[], borderWidth:0, pointRadius:0, fill:false, order:5},
-    {label:'Proyección Flávio', data:[], borderColor:'#2f6df0', borderWidth:3, pointRadius:2, tension:.2, order:1},
-    {label:'Parcial Flávio', data:[], borderColor:'#f5b862', borderDash:[6,4], borderWidth:2, pointRadius:2, tension:.2, order:2},
+    {label:'Proyección Flávio', data:[], borderColor:CPL, backgroundColor:CPL, borderWidth:3, pointRadius:2, pointHoverRadius:5, tension:.2, order:1},
+    {label:'Parcial Flávio', data:[], borderColor:'#7a8294', backgroundColor:'#7a8294', borderDash:[6,4], borderWidth:2, pointRadius:2, tension:.2, order:2},
+    {label:'Empate (50%)', data:[], borderColor:'#12161d', borderWidth:1, pointRadius:0, borderDash:[2,3], order:6},
   ]},
   options:{responsive:true, maintainAspectRatio:false, animation:false, interaction:{mode:'index', intersect:false},
-    scales:{x:{ticks:{color:'#8b94a8', maxTicksLimit:12}, grid:{color:'#232a38'}}, y:{ticks:{color:'#8b94a8', callback:v=>v+'%'}, grid:{color:'#232a38'}, title:{display:true, text:'% de Flávio (votos válidos)', color:'#8b94a8'}}},
-    plugins:{legend:{labels:{color:'#e8ebf2', filter:i=>i.text!=='IC90 inf'}}, tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmt(c.parsed.y,2)+'%'}}}}
+    scales:{x:{ticks:{color:'#7a8294', maxTicksLimit:8, maxRotation:0}, grid:{display:false}},
+            y:{ticks:{color:'#7a8294', callback:v=>v+'%'}, grid:{color:'#eef0f3'}, title:{display:true, text:'% de Flávio (votos válidos)', color:'#7a8294'}}},
+    plugins:{legend:{position:'bottom', labels:{color:'#4a5261', usePointStyle:true, boxWidth:8, filter:i=>i.text!=='IC90 inf'}}, tooltip:{filter:i=>i.dataset.label!=='IC90 inf'&&i.dataset.label!=='Empate (50%)', callbacks:{label:c=>c.dataset.label+': '+fmt(c.parsed.y,2)+'%'}}}}
 });
 function drawChart() {
   const c = chart.data;
-  c.labels = H.map(h => xMode==='t' ? h.t : fmt(h.counted*100,1)+'%');
+  c.labels = H.map(h => xMode==='t' ? h.t.slice(0,5) : fmt(h.counted*100,1)+'%');
   c.datasets[0].data = H.map(h=>h.hi); c.datasets[1].data = H.map(h=>h.lo);
   c.datasets[2].data = H.map(h=>h.proj_flavio_pct); c.datasets[3].data = H.map(h=>h.partial_flavio_pct);
+  c.datasets[4].data = H.map(()=>50);
   chart.update();
 }
 $('xt').onclick = () => { xMode='t'; $('xt').classList.add('on'); $('xc').classList.remove('on'); drawChart(); };
@@ -235,38 +340,53 @@ $('xc').onclick = () => { xMode='c'; $('xc').classList.add('on'); $('xt').classL
 
 // ---- tables ----
 let sortKey = 'electorate', sortDir = -1;
-const COLS = [['uf','UF'],['electorate','Electorado'],['counted','Escrut.'],['flavio_pct','Parcial F'],['proj_flavio_pct','Proy. F'],['r1_flavio_pct','1ª v. F'],['r1_lula_pct','1ª v. L'],['mp','Margen proy.']];
+const COLS = [['uf','UF'],['electorate','Electorado'],['counted','Escrut.'],['flavio_pct','Parcial F'],['proj_flavio_pct','Proy. F'],['r1_flavio_pct','1ª v. F'],['r1_lula_pct','1ª v. L'],['mp','Margen proy. (pp)']];
+function mbar(v){ const w = Math.min(50, Math.abs(v)/60*50); const col = v>=0?CPL:CPT;
+  return `<span class="mbar"><span class="tk"><i style="${v>=0?'left:50%':'right:50%'};width:${w}%;background:${col}"></i></span><b style="color:${col};font-weight:500;min-width:42px;text-align:right">${sgn(v)}</b></span>`; }
 function drawTable() {
   const rows = D.states.map(s => ({...s, mp: 2*s.proj_flavio_pct-100}));
   rows.sort((a,b) => (a[sortKey]>b[sortKey]?1:a[sortKey]<b[sortKey]?-1:0)*sortDir);
-  $('stt').innerHTML = '<thead><tr>' + COLS.map(([k,l]) => `<th data-k="${k}">${l}${k===sortKey?(sortDir>0?' ▲':' ▼'):''}</th>`).join('') + '</tr></thead><tbody>' +
-    rows.map(s => `<tr><td><b>${s.uf}</b></td><td>${fmtN(s.electorate)}</td><td>${pc(s.counted*100,0)}</td><td>${s.counted>0?pc(s.flavio_pct):'–'}</td><td>${pc(s.proj_flavio_pct)}</td><td>${pc(s.r1_flavio_pct)}</td><td>${pc(s.r1_lula_pct)}</td>
-    <td class="${s.mp>=0?'fl':'lu'}">${sgn(s.mp)}</td></tr>`).join('') + '</tbody>';
-  document.querySelectorAll('#stt th').forEach(th => th.onclick = () => { const k = th.dataset.k; if (k===sortKey) sortDir*=-1; else {sortKey=k; sortDir=k==='uf'?1:-1;} drawTable(); });
+  $('stt').innerHTML = '<thead><tr>' + COLS.map(([k,l]) => `<th data-k="${k}" tabindex="0" class="${k===sortKey?'cur':''}" aria-sort="${k===sortKey?(sortDir>0?'ascending':'descending'):'none'}">${l}${k===sortKey?(sortDir>0?' ▲':' ▼'):''}</th>`).join('') + '</tr></thead><tbody>' +
+    rows.map(s => `<tr><td><b>${s.uf}</b></td><td>${fmtN(s.electorate)}</td><td>${pc(s.counted*100,0)}</td><td>${s.counted>0?pc(s.flavio_pct):'–'}</td><td>${pc(s.proj_flavio_pct)}</td><td>${pc(s.r1_flavio_pct)}</td><td>${pc(s.r1_lula_pct)}</td><td>${mbar(s.mp)}</td></tr>`).join('') + '</tbody>';
+  document.querySelectorAll('#stt th').forEach(th => { const go = () => { const k = th.dataset.k; if (k===sortKey) sortDir*=-1; else {sortKey=k; sortDir=k==='uf'?1:-1;} drawTable(); };
+    th.onclick = go; th.onkeydown = e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); go(); } }; });
 }
 const GL = {Flávio1:'Votó a Flávio en 1ª vuelta', Lula1:'Votó a Lula en 1ª vuelta', Otros1:'Votó a otros en 1ª vuelta', NoVoto1:'No votó / blanco / nulo en 1ª'};
 function drawTrans() {
   const tf = D.transfers.to_flavio, tl = D.transfers.to_lula;
   $('trans').innerHTML = Object.keys(GL).map(k => {
     const a = tf[k]*100, b = tl[k]*100, rest = Math.max(0, 100-a-b);
-    return `<div class="tr"><div class="lbl">${GL[k]}</div><div class="stack"><i style="width:${a}%;background:var(--pl)"></i><i style="width:${b}%;background:var(--pt)"></i></div>
-    <div class="note" style="margin-top:2px"><span class="fl">→ Flávio ${fmt(a,1)}%</span> · <span class="lu">→ Lula ${fmt(b,1)}%</span> · resto ${fmt(rest,1)}%</div></div>`;
+    return `<div class="tr"><div class="lbl">${GL[k]}</div><div class="stack"><i style="width:${Math.min(100,a)}%;background:${CPL}"></i><i style="width:${Math.min(100,b)}%;background:${CPT}"></i></div>
+    <div class="n"><span class="fl">Flávio ${fmt(a,1)}%</span> · <span class="lu">Lula ${fmt(b,1)}%</span> · resto ${fmt(rest,1)}%</div></div>`;
   }).join('');
 }
 
 // ---- main update ----
+function pwFmt(p){ const x = p*100; return x > 99.9 ? '>99,9%' : x < 0.1 ? '<0,1%' : pc(x,1); }
 function summary() {
-  const n = D.national;
-  $('pf').textContent = pc(n.proj_flavio_pct); $('pl').textContent = pc(100-n.proj_flavio_pct);
-  $('barf').style.width = n.proj_flavio_pct + '%';
-  $('pvotes').textContent = `Flávio ${fmtN(n.proj_flavio_votes)} · Lula ${fmtN(n.proj_lula_votes)}`;
-  $('qf').textContent = pc(n.partial_flavio_pct,2); $('ql').textContent = pc(100-n.partial_flavio_pct,2);
-  $('qvotes').textContent = `Flávio ${fmtN(n.flavio)} · Lula ${fmtN(n.lula)}`;
-  $('counted').textContent = pc(D.counted*100,1);
-  $('ci').textContent = `${fmt(n.ci90[0],2)}% – ${fmt(n.ci90[1],2)}%`;
-  $('pw').textContent = pc(n.p_flavio_wins*100,1); $('pwl').textContent = pc((1-n.p_flavio_wins)*100,1);
-  $('r1').textContent = `F ${fmt(n.r1.flavio_pct,2)}% · L ${fmt(n.r1.lula_pct,2)}%`;
-  $('upd').textContent = D.updated;
+  const n = D.national, pf = n.proj_flavio_pct, pl = 100-pf, qf = n.partial_flavio_pct;
+  $('pf').textContent = fmt(pf); $('pl').textContent = fmt(pl);
+  $('barf').style.width = pf + '%';
+  const lo = n.ci90[0], hi = n.ci90[1];
+  $('barci').style.left = lo + '%'; $('barci').style.width = Math.max(0.4, hi-lo) + '%';
+  $('ci').textContent = `${fmt(lo,2)}% – ${fmt(hi,2)}%`;
+  $('pvF').textContent = fmtN(n.proj_flavio_votes); $('pvL').textContent = fmtN(n.proj_lula_votes);
+  const favF = pf >= 50, pfav = favF ? n.p_flavio_wins : 1-n.p_flavio_wins, favN = favF ? 'Flávio' : 'Lula';
+  $('pwin').textContent = pwFmt(pfav); $('pwin').className = 'v num ' + (favF?'fl':'lu');
+  $('pwinl').textContent = 'Probabilidad de que gane ' + favN;
+  const lead = Math.abs(2*pf-100);
+  $('hl').textContent = pfav >= 0.9 ? `${favN} gana la proyección con ${fmt(favF?pf:pl)}%` : `Carrera abierta: ${favN} lidera por ${fmt(lead)} pp`;
+  $('sub').textContent = `Con ${fmt(D.counted*100,1)}% del electorado escrutado, la ventaja proyectada de ${favN} es de ${fmt(lead)} puntos. ${pfav>=0.9 ? 'Probabilidad de victoria: '+pwFmt(pfav)+'.' : 'El resultado todavía no está definido.'}`;
+  // partial
+  $('counted').textContent = pc(D.counted*100,1); $('cbar').style.width = (D.counted*100) + '%';
+  $('qf').textContent = fmt(qf,2); $('ql').textContent = fmt(100-qf,2); $('qbar').style.width = qf + '%';
+  $('qvotes').textContent = `F ${fmtN(n.flavio)} · L ${fmtN(n.lula)}`;
+  const partF = qf >= 50;
+  $('partnote').textContent = (partF !== favF)
+    ? `Hoy el conteo parcial muestra adelante a ${partF?'Flávio':'Lula'}, pero la proyección da ${favN}: las urnas que faltan están en regiones donde ${favN} es más fuerte.`
+    : 'El conteo parcial no es el resultado final: depende de qué regiones ya reportaron.';
+  $('r1f').textContent = pc(n.r1.flavio_pct,2); $('r1l').textContent = pc(n.r1.lula_pct,2);
+  tickLive();
 }
 function index() {
   byIbge.clear(); byUF.clear();
@@ -280,20 +400,41 @@ function joinReport() {
   const miss = dom.filter(m => !ids.has(String(m.ibge)));
   const abroad = D.municipalities.filter(m => m.uf === 'ZZ');
   $('mapnote').textContent = `Unión por código IBGE: ${dom.length - miss.length}/${dom.length} municipios con geometría` +
-    (miss.length ? ` (sin polígono: ${miss.map(m=>m.nm+' '+m.uf).join(', ')})` : '') + (abroad.length ? ` · Exterior (${abroad.length} secciones) no tiene mapa.` : '');
+    (miss.length ? ` (sin polígono: ${miss.map(m=>m.nm+' '+m.uf).join(', ')})` : '') + (abroad.length ? `. Exterior (${abroad.length} secciones) no tiene mapa.` : '.');
   console.log('join', dom.length - miss.length, '/', dom.length);
 }
+// live / stale indicator: data timestamps are Brasília time (UTC-3)
+let fetchErr = null;
+function tickLive() {
+  const el = $('live'), st = $('status');
+  if (!D) return;
+  const t = Date.parse(D.updated.replace(' ','T') + '-03:00');
+  const age = isNaN(t) ? null : Math.max(0, (Date.now()-t)/60000);
+  const hhmm = D.updated.slice(11,19);
+  let cls = '', txt;
+  if (age == null) txt = 'Actualizado ' + D.updated;
+  else {
+    const ago = age < 1 ? 'hace menos de 1 min' : age < 60 ? `hace ${Math.round(age)} min` : `hace ${Math.floor(age/60)} h ${Math.round(age%60)} min`;
+    if (age > 12) { cls = 'bad'; txt = `Sin datos nuevos ${ago} · último dato ${hhmm}`; }
+    else if (age > 6) { cls = 'warn'; txt = `Demorado · actualizado ${ago} (${hhmm})`; }
+    else txt = `En vivo · actualizado ${ago} (${hhmm})`;
+  }
+  if (Q.get('sample')) txt += ' · DATOS DE PRUEBA';
+  if (fetchErr) { cls = cls || 'warn'; txt += ' · reintentando'; }
+  el.className = 'live ' + cls; st.textContent = txt;
+}
+setInterval(tickLive, 15000);
 async function getJSON(u) { const r = await fetch(u + (u.includes('?')?'&':'?') + '_=' + Date.now(), {cache:'no-store'}); if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); }
 let first = true;
 async function refresh() {
   try {
     const [d, h] = await Promise.all([getJSON(DATA_URL), getJSON(HIST_URL).catch(() => [])]);
-    D = d; H = h; index(); summary(); drawTable(); drawTrans(); drawChart();
+    D = d; H = h; fetchErr = null; index(); summary(); drawTable(); drawTrans(); drawChart();
     await mapsReady; restyle();
     if (first) { joinReport(); first = false; }
-    $('status').className = ''; $('status').textContent = 'actualizado ' + D.updated + ' · refresco cada 30 s' + (Q.get('sample') ? ' · DATOS DE PRUEBA' : '');
   } catch (e) {
-    $('status').className = 'err'; $('status').textContent = 'esperando datos… (' + e.message + ')';
+    fetchErr = e.message;
+    if (!D) { $('status').textContent = 'Esperando datos… (' + e.message + ')'; $('live').className = 'live warn'; } else tickLive();
   }
 }
 refresh(); setInterval(refresh, 30000);
